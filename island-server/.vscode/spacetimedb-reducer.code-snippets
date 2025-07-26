@@ -1,0 +1,44 @@
+{
+    "SpacetimeDB Reducer": {
+        "scope": "csharp",
+        "prefix": "reducer",
+        "body": [
+            "public static partial class Module",
+            "{",
+            "    [Reducer]",
+            "    public static void ${1:ReducerName}(ReducerContext ctx)",
+            "    {",
+            "        $0",
+            "    }",
+            "}"
+        ],
+        "description": "Creates a new SpacetimeDB reducer with the standard structure"
+    },
+    "SpacetimeDB Reducer with Parameters": {
+        "scope": "csharp",
+        "prefix": "reducer-params",
+        "body": [
+            "public static partial class Module",
+            "{",
+            "    [Reducer]",
+            "    public static void ${1:ReducerName}(ReducerContext ctx, ${2:parameters})",
+            "    {",
+            "        $0",
+            "    }",
+            "}"
+        ],
+        "description": "Creates a new SpacetimeDB reducer with parameters and the standard structure"
+    },
+    "SpacetimeDB Table": {
+        "scope": "csharp",
+        "prefix": "table",
+        "body": [
+            "[Table(Name = \"${1:TableName}\")]",
+            "public partial struct ${2:TableTypeName}",
+            "{",
+            "    $0",
+            "}"
+        ],
+        "description": "Creates a new SpacetimeDB table with the standard structure"
+    }
+}

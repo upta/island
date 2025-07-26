@@ -1,0 +1,5 @@
+root = true
+
+[*.cs]
+# Disable "declare types in namespaces" warning
+dotnet_diagnostic.CA1050.severity = none

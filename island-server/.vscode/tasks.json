@@ -1,0 +1,34 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "spacetime build",
+			"type": "shell",
+			"command": "spacetime",
+			"args": [
+				"build"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "generate",
+			"type": "shell",
+			"command": "spacetime",
+			"args": [
+				"generate",
+				"--lang",
+				"csharp",
+				"--out-dir",
+				"../island-client/Assets/Server/Generated"
+			],
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
