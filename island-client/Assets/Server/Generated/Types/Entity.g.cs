@@ -25,13 +25,16 @@ namespace SpacetimeDB.Types
         public DbVector3 Velocity;
         [DataMember(Name = "AngularVelocity")]
         public DbVector3 AngularVelocity;
+        [DataMember(Name = "LastUpdated")]
+        public SpacetimeDB.Timestamp LastUpdated;
 
         public Entity(
             int EntityId,
             DbVector3 Position,
             DbVector4 Rotation,
             DbVector3 Velocity,
-            DbVector3 AngularVelocity
+            DbVector3 AngularVelocity,
+            SpacetimeDB.Timestamp LastUpdated
         )
         {
             this.EntityId = EntityId;
@@ -39,6 +42,7 @@ namespace SpacetimeDB.Types
             this.Rotation = Rotation;
             this.Velocity = Velocity;
             this.AngularVelocity = AngularVelocity;
+            this.LastUpdated = LastUpdated;
         }
 
         public Entity()

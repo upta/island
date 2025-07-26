@@ -50,7 +50,7 @@ public static partial class Module
         );
 
         ctx.Db.UpdatePositionSchedules.Insert(
-            new() { ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(500)) }
+            new() { ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(100)) }
         );
     }
 }
