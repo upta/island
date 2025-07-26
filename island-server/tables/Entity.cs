@@ -11,4 +11,6 @@ public partial struct Entity
     public DbVector3 Velocity;
 
     public DbVector3 AngularVelocity;
+
+    public Timestamp LastUpdated;
 }

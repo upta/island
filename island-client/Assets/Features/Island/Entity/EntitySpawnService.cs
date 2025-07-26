@@ -20,9 +20,15 @@ public class EntitySpawnService
         {
             EntitySpawned?.Invoke(entity);
         };
+
+        _connection.Db.Entities.OnDelete += (ctx, entity) =>
+        {
+            EntityDespawned?.Invoke(entity.EntityId);
+        };
     }
 
     public event Action<Entity> EntitySpawned;
+    public event Action<int> EntityDespawned;
 
     public IEnumerable<Entity> Existing => _connection.Db.Entities.Iter();
 }

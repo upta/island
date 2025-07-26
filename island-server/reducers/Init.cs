@@ -3,6 +3,8 @@ public static partial class Module
     [Reducer(ReducerKind.Init)]
     public static void Init(ReducerContext ctx)
     {
+        var currentTime = ctx.Timestamp;
+
         ctx.Db.Entities.Insert(
             new()
             {
@@ -10,6 +12,7 @@ public static partial class Module
                 Rotation = new DbVector4(0, 0, 0, 1),
                 Velocity = new DbVector3(0, 0, 0),
                 AngularVelocity = new DbVector3(0, 0, 0),
+                LastUpdated = currentTime,
             }
         );
 
@@ -20,6 +23,7 @@ public static partial class Module
                 Rotation = new DbVector4(0, 0, 0, 1),
                 Velocity = new DbVector3(0, 0, 0),
                 AngularVelocity = new DbVector3(0, 0, 0),
+                LastUpdated = currentTime,
             }
         );
 
@@ -30,6 +34,7 @@ public static partial class Module
                 Rotation = new DbVector4(0, 0, 0, 1),
                 Velocity = new DbVector3(0, 0, 0),
                 AngularVelocity = new DbVector3(0, 0, 0),
+                LastUpdated = currentTime,
             }
         );
 
@@ -40,11 +45,12 @@ public static partial class Module
                 Rotation = new DbVector4(0, 0, 0, 1),
                 Velocity = new DbVector3(0, 0, 0),
                 AngularVelocity = new DbVector3(0, 0, 0),
+                LastUpdated = currentTime,
             }
         );
 
         ctx.Db.UpdatePositionSchedules.Insert(
-            new() { ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(100)) }
+            new() { ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(500)) }
         );
     }
 }

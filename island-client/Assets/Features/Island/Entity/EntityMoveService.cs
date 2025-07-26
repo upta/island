@@ -18,10 +18,6 @@ public class EntityMoveService
             {
                 EntityMoved?.Invoke(next);
             }
-
-            Debug.Log(
-                $"Entity {next.EntityId} moved from {prev.Position} to {next.Position} with rotation {next.Rotation}"
-            );
         };
     }
 }

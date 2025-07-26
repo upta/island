@@ -39,16 +39,26 @@ public static partial class Module
             float newX = radius * (float)Math.Cos(newAngle);
             float newZ = radius * (float)Math.Sin(newAngle);
 
+            // Calculate velocity based on position change
+            // For circular motion, tangential velocity is perpendicular to radius
+            // Moving clockwise: velocity = (-sin(angle), 0, cos(angle)) * angular_speed * radius
+            float angularSpeed = angleIncrement; // radians per update cycle
+            float linearSpeed = angularSpeed * radius;
+            float velocityX = -linearSpeed * (float)Math.Sin(newAngle);
+            float velocityZ = linearSpeed * (float)Math.Cos(newAngle);
+
+            // Calculate angular velocity (rotation around Y-axis for circular motion)
+            float angularVelocityY = -angularSpeed; // negative for clockwise rotation
+
             // Update the entity position (keep Y unchanged)
             var updatedEntity = entity;
             updatedEntity.Position = new DbVector3(newX, entity.Position.Y, newZ);
+            updatedEntity.Velocity = new DbVector3(velocityX, 0.0f, velocityZ);
+            updatedEntity.AngularVelocity = new DbVector3(0.0f, angularVelocityY, 0.0f);
+            updatedEntity.LastUpdated = ctx.Timestamp;
 
             // Update using the primary key
             ctx.Db.Entities.EntityId.Update(updatedEntity);
         }
-
-        ctx.Db.UpdatePositionSchedules.Insert(
-            new() { ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(100)) }
-        );
     }
 }
