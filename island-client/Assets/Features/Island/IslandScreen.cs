@@ -28,8 +28,6 @@ public class IslandScreen : MonoBehaviour
 
     private void OnEntitySpawned(Entity entity)
     {
-        Debug.Log($"Entity spawned: {entity.EntityId}");
-
         if (_entityPrefab == null)
         {
             Debug.LogWarning("Entity prefab is not assigned!");
@@ -44,15 +42,13 @@ public class IslandScreen : MonoBehaviour
         var spawnedEntity = Instantiate(_entityPrefab, entity.Position, entity.Rotation);
         _spawnedEntities[entity.EntityId] = spawnedEntity;
 
-        // Create interpolation buffer for this entity
         var stateBuffer = new TransformInterpolator.StateBuffer(
             maxSize: 32,
             maxStateAge: 2f,
-            interpDelay: 0.2f, // Increased delay for better network interpolation
+            interpDelay: 0.2f,
             timeSyncSamples: 10
         );
 
-        // Add initial state - use server timestamp if available, otherwise current time with simulated delay
         float timestamp = GetTimestampInSeconds(entity.LastUpdated);
         var initialState = new TransformInterpolator.TransformState(
             entity.Position,
@@ -63,10 +59,6 @@ public class IslandScreen : MonoBehaviour
         );
         stateBuffer.AddStateWithTimeSync(initialState, Time.time);
 
-        Debug.Log(
-            $"Created interpolation buffer for entity {entity.EntityId} with server timestamp {timestamp} (local time {Time.time})"
-        );
-
         _entityBuffers[entity.EntityId] = stateBuffer;
     }
 
@@ -74,8 +66,6 @@ public class IslandScreen : MonoBehaviour
     {
         if (_entityBuffers.TryGetValue(entity.EntityId, out var stateBuffer))
         {
-            // Add new movement state to the interpolation buffer
-            // Use server timestamp for realistic network behavior
             float timestamp = GetTimestampInSeconds(entity.LastUpdated);
             var newState = new TransformInterpolator.TransformState(
                 entity.Position,
@@ -88,7 +78,6 @@ public class IslandScreen : MonoBehaviour
         }
         else if (_spawnedEntities.ContainsKey(entity.EntityId))
         {
-            // Fallback to direct update if no buffer exists
             var spawnedEntity = _spawnedEntities[entity.EntityId];
 
             if (spawnedEntity != null)
@@ -100,8 +89,6 @@ public class IslandScreen : MonoBehaviour
 
     private void OnEntityDespawned(int entityId)
     {
-        Debug.Log($"Entity despawned: {entityId}");
-
         if (_spawnedEntities.TryGetValue(entityId, out var spawnedEntity))
         {
             if (spawnedEntity != null)
@@ -119,7 +106,6 @@ public class IslandScreen : MonoBehaviour
 
     private void Update()
     {
-        // Update all entity positions using interpolation
         foreach (var kvp in _entityBuffers)
         {
             int entityId = kvp.Key;
@@ -130,10 +116,8 @@ public class IslandScreen : MonoBehaviour
                 && spawnedEntity != null
             )
             {
-                // Get interpolated state for current time
                 var currentState = stateBuffer.GetCurrentState(Time.time);
 
-                // Apply interpolated transform
                 spawnedEntity.transform.SetPositionAndRotation(
                     currentState.position,
                     currentState.rotation
@@ -163,7 +147,6 @@ public class IslandScreen : MonoBehaviour
         _entityBuffers.Clear();
     }
 
-    // Track the first timestamp we receive to use as a reference point
     private static long? _baseServerTimestamp = null;
     private static float _baseLocalTime = 0f;
 
@@ -171,10 +154,8 @@ public class IslandScreen : MonoBehaviour
     {
         try
         {
-            // Convert microseconds since Unix epoch to a relative timestamp
             var microseconds = timestamp.MicrosecondsSinceUnixEpoch;
 
-            // Initialize base timestamp on first call
             if (_baseServerTimestamp == null)
             {
                 _baseServerTimestamp = microseconds;
@@ -183,7 +164,6 @@ public class IslandScreen : MonoBehaviour
                 return _baseLocalTime;
             }
 
-            // Calculate relative time from the base timestamp
             long relativeMicroseconds = microseconds - _baseServerTimestamp.Value;
             float relativeSeconds = relativeMicroseconds / 1_000_000.0f;
             float adjustedTimestamp = _baseLocalTime + relativeSeconds;
@@ -194,7 +174,6 @@ public class IslandScreen : MonoBehaviour
         {
             Debug.LogWarning($"Failed to convert timestamp: {ex.Message}");
 
-            // Fallback: use current time
             Debug.LogWarning("Could not convert server timestamp, using local time");
             return Time.time;
         }
