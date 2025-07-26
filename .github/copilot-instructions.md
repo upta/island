@@ -1,3 +1,4 @@
+- Don't add useless comments explaing what the code does.  Comments should explain why the code is doing something, not what it is doing, and even then only sparingly.
 - Everything in the "server" folder relates to SpacetimeDB
 - Everythign in the "client" folder relates to Unity game engine
 

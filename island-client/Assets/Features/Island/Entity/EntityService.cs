@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using SpacetimeDB.Types;
-using Unity.VisualScripting;
 
-public class EntitySpawnService
+public class EntityService
 {
     private readonly DbConnection _connection;
 
-    public EntitySpawnService(DbConnection connection)
+    public EntityService(DbConnection connection)
     {
         _connection = connection;
 
@@ -25,10 +24,22 @@ public class EntitySpawnService
         {
             EntityDespawned?.Invoke(entity.EntityId);
         };
+
+        _connection.Db.Entities.OnUpdate += (ctx, prev, next) =>
+        {
+            if (prev.Position != next.Position || prev.Rotation != next.Rotation)
+            {
+                EntityMoved?.Invoke(next);
+            }
+
+            EntityUpdated?.Invoke(prev, next);
+        };
     }
 
     public event Action<Entity> EntitySpawned;
     public event Action<int> EntityDespawned;
+    public event Action<Entity> EntityMoved;
+    public event Action<Entity, Entity> EntityUpdated;
 
     public IEnumerable<Entity> Existing => _connection.Db.Entities.Iter();
 }

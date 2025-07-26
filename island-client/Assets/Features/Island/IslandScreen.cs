@@ -9,21 +9,18 @@ public class IslandScreen : MonoBehaviour
     private GameObject _entityPrefab;
 
     [Inject]
-    private readonly EntitySpawnService _entitySpawnService;
-
-    [Inject]
-    private readonly EntityMoveService _entityMoveService;
+    private readonly EntityService _entityService;
 
     private readonly Dictionary<int, GameObject> _spawnedEntities = new();
     private readonly Dictionary<int, TransformInterpolator.StateBuffer> _entityBuffers = new();
 
     public void Awake()
     {
-        _entitySpawnService.EntitySpawned += OnEntitySpawned;
-        _entitySpawnService.EntityDespawned += OnEntityDespawned;
-        _entityMoveService.EntityMoved += OnEntityMoved;
+        _entityService.EntitySpawned += OnEntitySpawned;
+        _entityService.EntityDespawned += OnEntityDespawned;
+        _entityService.EntityMoved += OnEntityMoved;
 
-        foreach (var entity in _entitySpawnService.Existing)
+        foreach (var entity in _entityService.Existing)
         {
             OnEntitySpawned(entity);
         }
@@ -147,15 +144,11 @@ public class IslandScreen : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (_entitySpawnService != null)
+        if (_entityService != null)
         {
-            _entitySpawnService.EntitySpawned -= OnEntitySpawned;
-            _entitySpawnService.EntityDespawned -= OnEntityDespawned;
-        }
-
-        if (_entityMoveService != null)
-        {
-            _entityMoveService.EntityMoved -= OnEntityMoved;
+            _entityService.EntitySpawned -= OnEntitySpawned;
+            _entityService.EntityDespawned -= OnEntityDespawned;
+            _entityService.EntityMoved -= OnEntityMoved;
         }
 
         foreach (var spawnedEntity in _spawnedEntities.Values)

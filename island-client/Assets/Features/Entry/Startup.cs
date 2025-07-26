@@ -8,7 +8,6 @@ public class Startup : MonoBehaviour, IInstaller
     {
         builder.AddSingleton(typeof(ConnectionService));
         builder.AddSingleton(a => a.Resolve<ConnectionService>().Connection);
-        builder.AddSingleton(typeof(EntitySpawnService));
-        builder.AddSingleton(typeof(EntityMoveService));
+        builder.AddSingleton(typeof(EntityService));
     }
 }
